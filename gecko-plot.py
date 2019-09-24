@@ -10,6 +10,7 @@ from pandas.plotting import register_matplotlib_converters
 import os
 import sys
 from distutils.util import strtobool
+import itertools
 
 
 DEFAULT_DPI = 96
@@ -63,7 +64,8 @@ def command_line_args():
         "-i",
         "--input",
         type=str,
-        nargs=1,
+        nargs="+",
+        action="append",
         # nargs="+",
         help="Input CSV files to parse",
         required=True
@@ -97,39 +99,61 @@ def command_line_args():
     args = parser.parse_args()
     return args
 
+def get_gecko_name(csv):
+    # get the file name without extension from the path. Assume this is the geckos name.
+    name = os.path.basename(csv)
+    name = os.path.splitext(name)[0]
+    return name
 
 def load_data(csv):
-    raw_df = pd.read_csv(csv, parse_dates=["date"])
-    raw_df = raw_df.rename(columns=lambda x: x.strip())
+    # Load the csv with the date column as dates rather than strings.
+    if os.path.isfile(csv):
+        try:
+            df = pd.read_csv(csv, parse_dates=["date"])
+            df = df.rename(columns=lambda x: x.strip())
+            return df
+        except Exception as e:
+            print("Warning: Error parsing `{:}`. Ignoring.".format(csv))
+    else: 
+        return None
 
-    # Strip the names
-    raw_df["gecko"] = raw_df["gecko"].map(str.strip)
+def load_dataframes(csvs):
+    REQUIRED_COLS = set(["date", "mass"])
+    dict_of_df = {}
+    for csv_path in csvs:
+        if os.path.exists(csv_path):
+            # Get the geckos name 
+            gecko = get_gecko_name(csv_path)
+            # Load the data
+            df = load_data(csv_path)
+            # Check the required columns are present.
+            if df is not None and REQUIRED_COLS.issubset(df.columns):
+                # Store in the dict.
+                dict_of_df[gecko] = df
+        else: 
+            print("Warning: {:} does not exist.".format(csv_path))
+    return dict_of_df
 
-    return raw_df
-
-
-def geckos_to_plot(df, gecko_whitelist):
-    # Find the geckos in the dataset. 
-    geckos = df["gecko"].unique()
-
+def geckos_to_plot(loaded_geckos, gecko_whitelist):
     # Find which geckos should be plot.
     if gecko_whitelist is not None and len(gecko_whitelist) > 0:
         geckos_to_plot = []
         # For each gecko in the whitelist
         for gecko in gecko_whitelist:
             # If the gecko exists, add it to the ordered list of geckos to plot.
-            if gecko in geckos:
+            if gecko in loaded_geckos:
                 geckos_to_plot.append(gecko)
-        geckos = geckos_to_plot
+        return geckos_to_plot
+    else:
+        return loaded_geckos
 
-    return geckos
-
-def generate_per_gecko_dataframe(raw_df, geckos):
-    # Build a data frame for each valid gecko.
-    gecko_dfs = {}
+def filter_dataframes(raw_dataframes, geckos):
+    # Build a dict of only valid geckos.
+    filtered_dataframes = {}
     for gecko in geckos:
-        gecko_dfs[gecko] = raw_df.query("gecko == '{:}'".format(gecko))
-    return gecko_dfs
+        if gecko in raw_dataframes:
+            filtered_dataframes[gecko] = raw_dataframes[gecko]
+    return filtered_dataframes
 
 
 def plot(gecko_dfs, output, dpi, force):
@@ -143,7 +167,7 @@ def plot(gecko_dfs, output, dpi, force):
         rc={"lines.linewidth": 2.5}
     )
 
-    sns.set_palette(sns.color_palette("husl", 3))
+    sns.set_palette(sns.color_palette("husl", len(gecko_dfs)))
 
     register_matplotlib_converters()
     years = mdates.YearLocator()   # every year
@@ -154,7 +178,6 @@ def plot(gecko_dfs, output, dpi, force):
     fig, ax = plt.subplots(
         figsize=(16, 9),
     )
-
 
     xcol = "date"
     ycol = "mass"
@@ -214,29 +237,28 @@ def plot(gecko_dfs, output, dpi, force):
     # Either show or save the output figure.
     show_or_save(output, dpi, force)
 
-
 def main():
     args = command_line_args()
 
-    # Load the CSV into a dataframe
-    raw_df = load_data(args.input[0])
+    # Flatten the input arg. 
+    inputs = list(itertools.chain.from_iterable(args.input))
 
+    # Load input csvs into a dictionary of dataframes
+    raw_dataframes = load_dataframes(inputs)
     
-    # Get the names of geckos to plot
-    geckos = geckos_to_plot(raw_df, args.geckos)
+    # Get the names of geckos to plot, based on csv names but only valid ones.
+    geckos = geckos_to_plot(raw_dataframes.keys(), args.geckos)
 
     if len(geckos) ==  0:
         print("Error: No valid geckos specified")
         return
-
     
-    # Get a dataframe per gecko
-    gecko_dfs = generate_per_gecko_dataframe(raw_df, geckos)
-
+    # Build a dictionary of only dataframes to plot.
+    gecko_dataframes = filter_dataframes(raw_dataframes, geckos)
 
     # Plot the data
     plot(
-        gecko_dfs, 
+        gecko_dataframes, 
         args.output, 
         args.dpi, 
         args.force
