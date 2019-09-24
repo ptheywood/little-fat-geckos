@@ -15,3 +15,14 @@ python3 plot-litte-fat-geckos.py -i data/bojak.csv data/biscuit.csv
 ```
 
 Use the `-h/--help` option for further usage information.
+
+
+### Example
+
+E.g. to generate a plot of bojak and biscuit:
+
+```bash
+python3 plot-litte-fat-geckos.py -i data/bojak.csv data/biscuit.csv -o samples/bojack-and-biscuit.png -f
+```
+
+![Bojak and Biscuit](samples/bojack-and-biscuit.png)
