@@ -1,5 +1,4 @@
-# Gecko Fatness 
-
+# Gecko Fatness
 
 Repo containing data and plotting script for the fatness of my geckos.
 
@@ -11,7 +10,7 @@ Data is stored in CSV files in the `data` directory. One gecko per file.
 
 Run the script to view the figure, selecting which file(s) to view.
 
-```
+``` bash
 python3 plot-litte-fat-geckos.py -i data/bojak.csv data/biscuit.csv
 ```
 
