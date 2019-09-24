@@ -199,11 +199,14 @@ def plot(gecko_dfs, output, dpi, force):
 
     # Add a legend
     ax.legend(
-        loc="lower right",
         title="Gecko", 
         shadow=True, 
-        ncol=1
+        ncol=1,
+        bbox_to_anchor=(1.05, 1),
+        loc='upper left',
+        borderaxespad=0.
     )
+
 
     # Remove top/right spines
     sns.despine()
