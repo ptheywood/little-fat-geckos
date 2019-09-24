@@ -237,6 +237,11 @@ def plot(gecko_dfs, output, dpi, force):
     # Set axis limits.
     ax.set_ylim(bottom=0)
 
+    # Add title / axis labels
+    plt.title("Little Fat Geckos")
+    plt.xlabel("Date")
+    plt.ylabel("Mass (g)")
+
     # Either show or save the output figure.
     show_or_save(output, dpi, force)
 
