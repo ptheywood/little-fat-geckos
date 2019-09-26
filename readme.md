@@ -11,7 +11,7 @@ Data is stored in CSV files in the `data` directory. One gecko per file.
 Run the script to view the figure, selecting which file(s) to view.
 
 ``` bash
-python3 plot-litte-fat-geckos.py -i data/bojak.csv data/biscuit.csv
+python3 plot-litte-fat-geckos.py -i data/bojack.csv data/brooke.csv
 ```
 
 Use the `-h/--help` option for further usage information.
@@ -19,10 +19,34 @@ Use the `-h/--help` option for further usage information.
 
 ### Example
 
-E.g. to generate a plot of bojak and biscuit:
+E.g. to generate a plot of Bojack and Brooke's weights:
 
 ```bash
-python3 plot-litte-fat-geckos.py -i data/bojak.csv data/biscuit.csv -o samples/bojack-and-biscuit.png -f
+python plot-litte-fat-geckos.py -i data/bojack.csv data/brooke.csv -o samples/bojack-and-brooke.png -f
 ```
 
-![Bojak and Biscuit](samples/bojack-and-biscuit.png)
+![Bojack and Brooke](samples/bojack-and-brooke.png)
+
+
+## Python Environment
+
+### Linux (venv)
+
+@todo
+
+### Windows (Conda)
+
+Using conda on windows, create a new environment and activate it
+
+```bash
+conda create -n little-fat-geckos
+conda activate little-fat-geckos
+```
+
+Install required pacakges
+
+```
+conda install --file requirements.txt
+```
+
+To run the script, ensure the conda environment is active.
