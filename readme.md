@@ -32,7 +32,23 @@ python plot-litte-fat-geckos.py -i data/bojack.csv data/brooke.csv -o samples/bo
 
 ### Linux (venv)
 
-@todo
+1. Ensure Python 3 (ideally Python 3.6) is installed.
+2. Create a [virtual environment](https://docs.python.org/3/tutorial/venv.html)
+
+```bash
+mkdir -m 700 ~/.venvs
+python3 -m venv ~/.venvs/little-fat-geckos
+source ~/.venvs/litte-fat-geckos/bin/activate
+```
+
+2. Install the Python packages needed to build the HTML documentation: ::
+
+```bash
+pip3 install -r requirements.txt
+```
+
+To run the script, ensure the `little-fat-geckos` venv environment is active.
+
 
 ### Windows (Conda)
 
