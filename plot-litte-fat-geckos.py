@@ -161,8 +161,8 @@ def mutate_dataframes(dataframes):
         print(k)
         df = v.copy()
 
-        df["rolling"] = df["mass"].rolling(window=3, center=True, win_type=None).mean()
-        # df["rolling"] = df["mass"].rolling(window=2, center=True, win_type="cosine").mean()
+        # df["rolling"] = df["mass"].rolling(window=5, center=True, win_type=None).mean()
+        df["rolling"] = df["mass"].rolling(window=3, center=True, win_type="exponential").mean(tau=1.0)
         # df["rolling"] = df["mass"].ewm(span=3, adjust=True).mean()
 
         new_dfs[k] = df
