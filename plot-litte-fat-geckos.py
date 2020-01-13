@@ -161,8 +161,9 @@ def mutate_dataframes(dataframes):
         print(k)
         df = v.copy()
 
-        # df["rolling"] = df["mass"].rolling(window=2).mean()
-        df["rolling"] = df["mass"].ewm(span=2, adjust=False).mean()
+        df["rolling"] = df["mass"].rolling(window=3, center=True, win_type=None).mean()
+        # df["rolling"] = df["mass"].rolling(window=2, center=True, win_type="cosine").mean()
+        # df["rolling"] = df["mass"].ewm(span=3, adjust=True).mean()
 
         new_dfs[k] = df
 
@@ -203,14 +204,14 @@ def plot(gecko_dfs, output, dpi, force):
             df[xcol], 
             df[ycol],
             marker=ith(MARKERS, i),
-            linestyle=ith(LINES,i),
+            linestyle="",#ith(LINES,i),
             label=gecko,
         )
 
         ax.plot(
             df[xcol], 
             df["rolling"],
-            marker="X",#ith(MARKERS, i),
+            marker="",#ith(MARKERS, i),
             linestyle="--",#ith(LINES,i),
             label="rolling " + gecko,
         )
