@@ -155,6 +155,20 @@ def filter_dataframes(raw_dataframes, geckos):
             filtered_dataframes[gecko] = raw_dataframes[gecko]
     return filtered_dataframes
 
+def mutate_dataframes(dataframes):
+    new_dfs = {}
+    for k, v in dataframes.items():
+        print(k)
+        df = v.copy()
+
+        # df["rolling"] = df["mass"].rolling(window=2).mean()
+        df["rolling"] = df["mass"].ewm(span=2, adjust=False).mean()
+
+        new_dfs[k] = df
+
+    
+    return new_dfs
+
 
 def plot(gecko_dfs, output, dpi, force):
     # Prepare some stuff for plotting.
@@ -191,6 +205,14 @@ def plot(gecko_dfs, output, dpi, force):
             marker=ith(MARKERS, i),
             linestyle=ith(LINES,i),
             label=gecko,
+        )
+
+        ax.plot(
+            df[xcol], 
+            df["rolling"],
+            marker="X",#ith(MARKERS, i),
+            linestyle="--",#ith(LINES,i),
+            label="rolling " + gecko,
         )
         i+=1
 
@@ -263,6 +285,9 @@ def main():
     
     # Build a dictionary of only dataframes to plot.
     gecko_dataframes = filter_dataframes(raw_dataframes, geckos)
+
+    # Mutate dataframes
+    gecko_dataframes = mutate_dataframes(gecko_dataframes)
 
     # Plot the data
     plot(
