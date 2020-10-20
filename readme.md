@@ -11,7 +11,7 @@ Data is stored in CSV files in the `data` directory. One gecko per file.
 Run the script to view the figure, selecting which file(s) to view.
 
 ``` bash
-python3 plot-litte-fat-geckos.py -i data/bojack.csv data/brooke.csv
+python3 plot-little-fat-geckos.py -i data/bojack.csv data/brooke.csv
 ```
 
 Use the `-h/--help` option for further usage information.
@@ -22,7 +22,7 @@ Use the `-h/--help` option for further usage information.
 E.g. to generate a plot of Bojack and Brooke's weights:
 
 ```bash
-python plot-litte-fat-geckos.py -i data/bojack.csv data/brooke.csv -o samples/bojack-and-brooke.png -f
+python plot-little-fat-geckos.py -i data/bojack.csv data/brooke.csv -o samples/bojack-and-brooke.png -f
 ```
 
 ![Bojack and Brooke](samples/bojack-and-brooke.png)
@@ -38,7 +38,7 @@ python plot-litte-fat-geckos.py -i data/bojack.csv data/brooke.csv -o samples/bo
 ```bash
 mkdir -m 700 ~/.venvs
 python3 -m venv ~/.venvs/little-fat-geckos
-source ~/.venvs/litte-fat-geckos/bin/activate
+source ~/.venvs/little-fat-geckos/bin/activate
 ```
 
 2. Install the Python packages needed to build the HTML documentation: ::
